@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Binary Session Tracker - Professional</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 1rem;
+      color: #1f2937;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      font-weight: 300;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 1024px) {
+      .content-grid {
+        grid-template-columns: 400px 1fr;
+      }
+    }
+
+    .control-panel {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      height: fit-content;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 500;
+      background: white;
+      transition: all 0.2s ease;
+      color: #1f2937;
+    }
+
+    .form-input:focus, .form-select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      transform: translateY(-1px);
+    }
+
+    .generate-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 10px 15px -3px rgba(102, 126, 234, 0.3);
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 20px 25px -5px rgba(102, 126, 234, 0.4);
+    }
+
+    .generate-btn:active {
+      transform: translateY(0);
+    }
+
+    .results-panel {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      min-height: 400px;
+      overflow: hidden;
+    }
+
+    .results-header {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f3f4f6;
+    }
+
+    .results-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+
+    .results-subtitle {
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+
+    .table-container {
+      max-height: 600px;
+      overflow-y: auto;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    .results-table th {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1rem 0.75rem;
+      text-align: center;
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .results-table td {
+      padding: 0.875rem 0.75rem;
+      text-align: center;
+      font-weight: 500;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 0.875rem;
+    }
+
+    .results-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .withdraw-row {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+      color: white;
+    }
+
+    .withdraw-row:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    }
+
+    .withdraw-row td {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #6b7280;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      padding: 1.5rem;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .control-panel, .results-panel {
+        padding: 1.5rem;
+        border-radius: 20px;
+      }
+      
+      .results-table th,
+      .results-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 0.5rem;
+      }
+      
+      .header h1 {
+        font-size: 1.75rem;
+      }
+      
+      .control-panel, .results-panel {
+        padding: 1rem;
+        border-radius: 16px;
+      }
+      
+      .results-table th,
+      .results-table td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <div class="header">
+      <h1>Binary Session Tracker</h1>
+      <p>Professional Trading Plan Generator</p>
+    </div>
+
+    <div class="content-grid">
+      <div class="control-panel">
+        <div class="form-group">
+          <label class="form-label" for="capital">Starting Capital ($)</label>
+          <input type="number" id="capital" class="form-input" value="100" min="1">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="dailyTarget">Daily Target (%)</label>
+          <input type="number" id="dailyTarget" class="form-input" value="10" min="0.1" step="0.1">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sessionCount">Sessions per Day</label>
+          <input type="number" id="sessionCount" class="form-input" value="4" min="1">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="withdrawEnable">Withdraw System</label>
+          <select id="withdrawEnable" class="form-select">
+            <option value="yes">Enabled</option>
+            <option value="no">Disabled</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="withdrawFrequency">Withdraw Every N Days</label>
+          <input type="number" id="withdrawFrequency" class="form-input" value="5" min="1">
+        </div>
+
+        <button class="generate-btn" onclick="generatePlan()">
+          <span id="btnText">Generate Trading Plan</span>
+          <span id="btnLoading" class="loading" style="display: none;"></span>
+        </button>
+      </div>
+
+      <div class="results-panel">
+        <div class="results-header">
+          <h2 class="results-title">Trading Plan Results</h2>
+          <p class="results-subtitle">Your personalized 30-day trading strategy</p>
+        </div>
+
+        <div id="statsContainer" style="display: none;">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-value" id="totalProfit">$0</div>
+              <div class="stat-label">Total Profit</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="totalWithdrawn">$0</div>
+              <div class="stat-label">Total Withdrawn</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="finalBalance">$0</div>
+              <div class="stat-label">Final Balance</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value" id="totalSessions">0</div>
+              <div class="stat-label">Total Sessions</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="output">
+          <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <h3>Ready to Generate</h3>
+            <p>Click "Generate Trading Plan" to see your personalized trading strategy</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function generatePlan() {
+      const btnText = document.getElementById('btnText');
+      const btnLoading = document.getElementById('btnLoading');
+      const output = document.getElementById('output');
+      const statsContainer = document.getElementById('statsContainer');
+      
+      // Show loading state
+      btnText.style.display = 'none';
+      btnLoading.style.display = 'inline-block';
+      
+      // Simulate loading delay for better UX
+      setTimeout(() => {
+        const capital = parseFloat(document.getElementById('capital').value);
+        const dailyTarget = parseFloat(document.getElementById('dailyTarget').value);
+        const sessions = parseInt(document.getElementById('sessionCount').value);
+        const withdrawEnabled = document.getElementById('withdrawEnable').value === "yes";
+        const withdrawFrequency = parseInt(document.getElementById('withdrawFrequency').value);
+
+        let currentCapital = capital;
+        let totalProfit = 0;
+        let totalWithdrawn = 0;
+        let totalSessions = sessions * 30;
+        
+        let table = `
+          <div class="table-container">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Day</th>
+                  <th>Session</th>
+                  <th>Target</th>
+                  <th>Profit</th>
+                  <th>Withdraw</th>
+                  <th>Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+        `;
+
+        for (let d = 1; d <= 30; d++) {
+          const dailyProfit = currentCapital * (dailyTarget / 100);
+          const sessionProfit = dailyProfit / sessions;
+
+          for (let s = 1; s <= sessions; s++) {
+            let withdraw = 0;
+            if (withdrawEnabled && withdrawFrequency > 0 && d % withdrawFrequency === 0 && s === sessions) {
+              withdraw = currentCapital * 0.2;
+              totalWithdrawn += withdraw;
+            }
+            
+            currentCapital += sessionProfit - withdraw;
+            totalProfit += sessionProfit;
+            
+            const rowClass = withdraw > 0 ? 'withdraw-row' : '';
+            table += `
+              <tr class="${rowClass}">
+                <td>${d}</td>
+                <td>${s}</td>
+                <td>$${sessionProfit.toFixed(2)}</td>
+                <td>$${sessionProfit.toFixed(2)}</td>
+                <td>$${withdraw.toFixed(2)}</td>
+                <td>$${currentCapital.toFixed(2)}</td>
+              </tr>
+            `;
+          }
+        }
+
+        table += `
+              </tbody>
+            </table>
+          </div>
+        `;
+
+        // Update stats
+        document.getElementById('totalProfit').textContent = `$${totalProfit.toFixed(2)}`;
+        document.getElementById('totalWithdrawn').textContent = `$${totalWithdrawn.toFixed(2)}`;
+        document.getElementById('finalBalance').textContent = `$${currentCapital.toFixed(2)}`;
+        document.getElementById('totalSessions').textContent = totalSessions;
+
+        // Show results
+        output.innerHTML = table;
+        statsContainer.style.display = 'block';
+
+        // Reset button
+        btnText.style.display = 'inline';
+        btnLoading.style.display = 'none';
+        
+      }, 800);
+    }
+
+    // Auto-generate on page load
+    window.addEventListener('load', () => {
+      setTimeout(generatePlan, 500);
+    });
+  </script>
+</body>
+</html>
